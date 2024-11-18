@@ -1,12 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testExecutions version="1">
-  <file path="C:\Users\dbarbey\marvel-app\src\pages\CharacterDetailPage.test.jsx">
-    <testCase name="CharacterDetailPage renders character details correctly" duration="29"/>
-  </file>
-  <file path="C:\Users\dbarbey\marvel-app\src\pages\AboutPage.test.jsx">
-    <testCase name="render AboutPage component" duration="55"/>
-  </file>
-  <file path="C:\Users\dbarbey\marvel-app\src\pages\ContactPage.test.jsx">
-    <testCase name="render ContactPage component" duration="59"/>
-  </file>
 </testExecutions>
