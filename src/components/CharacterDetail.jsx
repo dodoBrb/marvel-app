@@ -3,7 +3,7 @@
 import React from 'react';
 
 const CharacterDetail = ({ character }) => {
-    const { description, thumbnail, modified } = character;
+    const { description, thumbnail, modified} = character;
 
     return (
         <div>

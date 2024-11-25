@@ -17,15 +17,15 @@ const characters = [
 ];
 
 describe('CharactersList component', () => {
-
-    test('renders the correct number of characters', () => {
+    
+    test('renders the correct number of characters and a link for each character', () => {
         render(<CharactersList characters={characters} />, { wrapper: BrowserRouter });
         const characterItems = screen.getAllByRole('listitem');
         expect(characterItems).toHaveLength(characters.length);
         characters.forEach(character => {
             const linkElement = screen.getByRole('link', { name: character.name });
             expect(linkElement).toBeInTheDocument();
-            expect(linkElement).toHaveAttribute('href', `/character/${character.id}`);
+            expect(linkElement).toHaveAttribute('href', `/characters/${character.id}`);
         });
     });
 
@@ -35,7 +35,7 @@ describe('CharactersList component', () => {
         expect(characterItems).toHaveLength(0);
     });
 
-    test('renders an empty list when no characters are provided', () => {
+    test('renders when nothing is provided', () => {
         render(<CharactersList />, { wrapper: BrowserRouter });
         const characterItems = screen.queryAllByRole('listitem');
         expect(characterItems).toHaveLength(0);
