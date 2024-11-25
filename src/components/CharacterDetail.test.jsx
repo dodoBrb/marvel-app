@@ -13,17 +13,15 @@ const character = {
 };
 
 describe('CharacterDetail component', () => {
-    test('renders character image', () => {
+    test('renders character image, description and modification date', () => {
         render(<CharacterDetail character={character} />);
         const imageElement = screen.getByAltText(character.name);
         expect(imageElement).toBeInTheDocument();
         expect(imageElement).toHaveAttribute('src', `${character.thumbnail.path}/standard_large.${character.thumbnail.extension}`);
-    });
-
-    test('renders character description', () => {
-        render(<CharacterDetail character={character} />);
         const descriptionElement = screen.getByText(character.description);
         expect(descriptionElement).toBeInTheDocument();
+        const modifiedElement = screen.getByText(character.modified);
+        expect(modifiedElement).toBeInTheDocument();
     });
 
     test('renders default description when no description is available', () => {
@@ -31,12 +29,6 @@ describe('CharacterDetail component', () => {
         render(<CharacterDetail character={characterWithoutDescription} />);
         const defaultDescriptionElement = screen.getByText("No description available.");
         expect(defaultDescriptionElement).toBeInTheDocument();
-    });
-
-    test('renders character modification date', () => {
-        render(<CharacterDetail character={character} />);
-        const modifiedElement = screen.getByText(character.modified);
-        expect(modifiedElement).toBeInTheDocument();
     });
 
     test('renders default modification date when no modification date is available', () => {

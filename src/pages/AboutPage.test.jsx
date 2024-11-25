@@ -16,9 +16,6 @@ test('render AboutPage component', () => {
     expect(h2Element).toBeInTheDocument();
 
     // Expect the paragraph with the text 'We are a team of Marvel fans who love to create awesome apps !' to be in the document
-    const paragraphElement = screen.getByText('We are a team of Marvel fans who love to to create awesome apps !');
+    const paragraphElement = screen.getByText('We are a team of Marvel fans who love to create awesome apps !');
     expect(paragraphElement).toBeInTheDocument();
 });
-
-
-
