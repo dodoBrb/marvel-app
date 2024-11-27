@@ -31,6 +31,7 @@ Marvel App est une application web qui permet aux utilisateurs de consulter des 
 Pour exécuter les tests, utilisez la commande suivante :
     ```sh
     npm test
+    ```
 
 Structure du projet
 src/
