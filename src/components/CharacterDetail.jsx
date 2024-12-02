@@ -5,7 +5,7 @@ const CharacterDetail = ({ character }) => {
     const { description, thumbnail, modified } = character;
 
     // Convertir la date de modification en un format lisible
-    const formattedDate = modified ? format(new Date(modified), 'MMM dd, yyyy') : "No modification date available.";
+    const formattedDate = modified ? format(new Date(modified), 'MMM d, yyyy') : "No modification date available.";
 
     return (
         <div>
