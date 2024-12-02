@@ -1,65 +1,113 @@
-import '@testing-library/jest-dom';
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter, useLoaderData, useNavigate, useSearchParams } from 'react-router-dom';
 import CharactersPage from './CharactersPage';
-import { BrowserRouter } from 'react-router-dom';
+import { format } from 'date-fns';
+import '@testing-library/jest-dom';
 
-const characters = [
-    {
-        id: "1",
-        name: "Thor",
-    },
-    {
-        id: "2",
-        name: "Captain America",
-    },
-];
-
-// Mock de la fonction useLoaderData pour simuler les données chargées
-jest.mock('react-router', () => ({
-    ...jest.requireActual('react-router'), // Utilisation réelle pour les parties non-mockées
-    useLoaderData: () => {
-        return characters;
-    },
+// Mock the dependencies
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useLoaderData: jest.fn(),
+    useNavigate: jest.fn(),
+    useSearchParams: jest.fn(),
 }));
 
-describe('CharactersPage Component', () => {
-    test('renders CharactersPage component correctly', () => {
-        // Render du composant
-        render(<CharactersPage />, { wrapper: BrowserRouter });
+jest.mock('date-fns', () => ({
+    ...jest.requireActual('date-fns'),
+    format: jest.fn(),
+}));
 
-        // Vérification du titre de la page
-        expect(document.title).toBe('Marvel App');
+jest.mock('../components/NumberOfCharacters', () => ({
+    NumberOfCharacters: ({ characters }) => <div>{characters.length} characters</div>,
+}));
 
-        // Vérification de la présence du titre "Marvel Characters"
-        const h2Element = screen.getByRole('heading', { level: 2, name: 'Marvel Characters' });
-        expect(h2Element).toBeInTheDocument();
+describe('CharactersPage', () => {
+    const mockCharacters = [
+        { id: 1, name: 'Iron Man', modified: '2023-01-01T00:00:00Z' },
+        { id: 2, name: 'Spider-Man', modified: '2023-01-02T00:00:00Z' },
+    ];
 
-        // Vérification de la présence des personnages dans la liste
-        characters.forEach((character) => {
-            const characterElement = screen.getByText(character.name);
-            expect(characterElement).toBeInTheDocument();
-        });
-
-        
+    beforeEach(() => {
+        useLoaderData.mockReturnValue(mockCharacters);
+        useNavigate.mockReturnValue(jest.fn());
+        useSearchParams.mockReturnValue([
+            new URLSearchParams({ sort: 'name', order: 'asc' }),
+            jest.fn(),
+        ]);
+        format.mockImplementation((date, formatStr) => date.toISOString().split('T')[0]);
     });
 
-    test('updates sort and order parameters when dropdowns are changed', () => {
-        // Render du composant
-        render(<CharactersPage />, { wrapper: BrowserRouter });
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-        // Vérification initiale des valeurs des listes déroulantes
-        const sortSelect = screen.getByLabelText('Sort by:');
-        expect(sortSelect).toHaveValue('name'); // Valeur par défaut : 'name'
+    test('renders the page title', () => {
+        render(
+            <MemoryRouter>
+                <CharactersPage />
+            </MemoryRouter>
+        );
+        expect(document.title).toBe('Marvel App');
+    });
 
-        const orderSelect = screen.getByLabelText('Order:');
-        expect(orderSelect).toHaveValue('asc'); // Valeur par défaut : 'asc'
+    test('renders the characters list', () => {
+        render(
+            <MemoryRouter>
+                <CharactersPage />
+            </MemoryRouter>
+        );
+        const characterLinks = screen.getAllByRole('link');
+        expect(characterLinks).toHaveLength(mockCharacters.length);
+        expect(characterLinks[0]).toHaveTextContent('Iron Man');
+        expect(characterLinks[1]).toHaveTextContent('Spider-Man');
+    });
 
-        // Simulation du changement de tri
+    test('renders the sort and order dropdowns', () => {
+        render(
+            <MemoryRouter>
+                <CharactersPage />
+            </MemoryRouter>
+        );
+        const sortSelect = screen.getByLabelText(/Sort by:/i);
+        const orderSelect = screen.getByLabelText(/Order:/i);
+        expect(sortSelect).toBeInTheDocument();
+        expect(orderSelect).toBeInTheDocument();
+    });
+
+    test('handles sort change', () => {
+        const setSearchParams = jest.fn();
+        useSearchParams.mockReturnValue([
+            new URLSearchParams({ sort: 'name', order: 'asc' }),
+            setSearchParams,
+        ]);
+
+        render(
+            <MemoryRouter>
+                <CharactersPage />
+            </MemoryRouter>
+        );
+
+        const sortSelect = screen.getByLabelText(/Sort by:/i);
         fireEvent.change(sortSelect, { target: { value: 'modified' } });
-        expect(sortSelect.value).toBe('modified'); // Nouvelle valeur : 'modified'
+        expect(setSearchParams).toHaveBeenCalledWith({ sort: 'modified', order: 'asc' });
+    });
 
-        // Simulation du changement d'ordre
+    test('handles order change', () => {
+        const setSearchParams = jest.fn();
+        useSearchParams.mockReturnValue([
+            new URLSearchParams({ sort: 'name', order: 'asc' }),
+            setSearchParams,
+        ]);
+
+        render(
+            <MemoryRouter>
+                <CharactersPage />
+            </MemoryRouter>
+        );
+
+        const orderSelect = screen.getByLabelText(/Order:/i);
         fireEvent.change(orderSelect, { target: { value: 'desc' } });
-        expect(orderSelect.value).toBe('desc'); // Nouvelle valeur : 'desc'
+        expect(setSearchParams).toHaveBeenCalledWith({ sort: 'name', order: 'desc' });
     });
 });

@@ -1,8 +1,9 @@
-// FILEPATH: /c:/Users/jrossi04/marvel-app/src/pages/CharactersPage.jsx
+// FILEPATH: /c:/Users/dbarbey/marvel-app/src/pages/CharactersPage.jsx
 
 import { NumberOfCharacters } from '../components/NumberOfCharacters'; // Chemin d'accès pour l'importation
 import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 export default function CharactersPage() {
     const characters = useLoaderData(); // Assurez-vous que cette fonction soit importée correctement
@@ -56,7 +57,9 @@ export default function CharactersPage() {
             <ul>
                 {characters.map(character => (
                     <li key={character.id}>
-                        <a href={`/character/${character.id}`}>{character.name}</a>
+                        <a href={`/character/${character.id}`}>
+                            <strong>{character.name}</strong> - {format(new Date(character.modified), 'MMM d, yyyy')}
+                        </a>
                     </li>
                 ))}
             </ul>
