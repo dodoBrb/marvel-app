@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import CharacterDetail from './CharacterDetail';
+import { format } from 'date-fns';
 
 const character = {
     name: "Thor",
@@ -9,18 +10,22 @@ const character = {
         path: "https://example.com/thor",
         extension: "jpg"
     },
-    modified: "2021-09-01"
+    modified: "2013-11-07T10:48:53-0500"
 };
 
 describe('CharacterDetail component', () => {
     test('renders character image, description and modification date', () => {
         render(<CharacterDetail character={character} />);
+        
         const imageElement = screen.getByAltText(character.name);
         expect(imageElement).toBeInTheDocument();
         expect(imageElement).toHaveAttribute('src', `${character.thumbnail.path}/standard_large.${character.thumbnail.extension}`);
+        
         const descriptionElement = screen.getByText(character.description);
         expect(descriptionElement).toBeInTheDocument();
-        const modifiedElement = screen.getByText(character.modified);
+        
+        const formattedDate = format(new Date(character.modified), 'MMM d, yyyy');
+        const modifiedElement = screen.getByText(formattedDate);
         expect(modifiedElement).toBeInTheDocument();
     });
 

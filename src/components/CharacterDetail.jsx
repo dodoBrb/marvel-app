@@ -1,9 +1,11 @@
-// src/components/CharacterDetail.jsx
-
 import React from 'react';
+import { format } from 'date-fns';
 
 const CharacterDetail = ({ character }) => {
-    const { description, thumbnail, modified} = character;
+    const { description, thumbnail, modified } = character;
+
+    // Convertir la date de modification en un format lisible
+    const formattedDate = modified ? format(new Date(modified), 'MMM d, yyyy') : "No modification date available.";
 
     return (
         <div>
@@ -14,7 +16,7 @@ const CharacterDetail = ({ character }) => {
                 />
             )}
             <p>{description || "No description available."}</p>
-            <p>{modified || "No modification date available."}</p>
+            <p>{formattedDate}</p>
         </div>
     );
 };
