@@ -1,64 +1,46 @@
-import React from 'react';
-import { getCharacters } from '../api/characters-api';
+import React, { useState } from 'react';
+import CompareRadarChart from '../components/RadarChart';
+import charactersData from '../data/characters.json';
 
 const CompareCharactersPage = () => {
-    // change the title of the page
     document.title = "Compare | Marvel App";
 
-    // A supprimer, permet de rendre le composant fonctionnel dans un premier temps
-    const characters = getCharacters();
-    // Fin de la partie à supprimer
+    const [characters] = useState(charactersData);
+    const [option1, setOption1] = useState(0);
+    const [option2, setOption2] = useState(1);
 
-    // transform the characters to array of label/value objects
-    const options = characters.map((character, index) => ({
-        value: index,
-        label: character.name,
-    }));
-
-    // set the default options to the first two characters
-    const [option1, setOption1] = React.useState(options[0]);
-    const [option2, setOption2] = React.useState(options[1]);
-
-    const centerStyle = {
-        textAlign: 'center',
-        width: 500,
-    };
+    const character1 = characters[option1];
+    const character2 = characters[option2];
 
     return (
         <>
-            <h2>Compare characters</h2>
-
-            <p style={centerStyle}>
+            <h2>Compare Characters</h2>
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                 <select
-                    data-testid='select-character-1'
-                    value={option1.value}
-                    onChange={(event) => setOption1(options[event.target.value])}
+                    value={option1}
+                    onChange={(e) => setOption1(Number(e.target.value))}
+                    style={{ marginRight: '10px' }}
                 >
-                    {options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>&nbsp; {/* Fix the ambiguous spacing */}
-                with&nbsp;
-                <select
-                    data-testid='select-character-2'
-                    value={option2.value}
-                    onChange={(event) => setOption2(options[event.target.value])}
-                >
-                    {options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
+                    {characters.map((character, index) => (
+                        <option key={character.id} value={index}>
+                            {character.name}
                         </option>
                     ))}
                 </select>
-            </p>
-
-            { /* A supprimer, permet le voir comment récupérer les éléments selectionnés */ }
-            <p style={centerStyle}>
-                {characters[option1.value].name} vs {characters[option2.value].name}
-            </p>
-            { /* Fin de la partie à supprimer */ }
+                with
+                <select
+                    value={option2}
+                    onChange={(e) => setOption2(Number(e.target.value))}
+                    style={{ marginLeft: '10px' }}
+                >
+                    {characters.map((character, index) => (
+                        <option key={character.id} value={index}>
+                            {character.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <CompareRadarChart character1={character1} character2={character2} />
         </>
     );
 };
