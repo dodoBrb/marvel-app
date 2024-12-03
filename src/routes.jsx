@@ -6,6 +6,7 @@ import AboutPage from "./pages/AboutPage";
 import CharactersPage from "./pages/CharactersPage";
 import ContactPage from "./pages/ContactPage";
 import CharacterDetailPage from "./pages/CharacterDetailPage"; // Assurez-vous d'importer votre composant
+import ComparePage from './pages/ComparePage';
 
 const routes = [
     {
@@ -23,6 +24,7 @@ const routes = [
                     return characters;
                 }
             },
+            { path: "/compare", element: <ComparePage /> },
             { path: "/about", element: <AboutPage /> },
             { path: "/contact", element: <ContactPage /> },
             {
